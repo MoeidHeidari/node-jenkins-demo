@@ -1,8 +1,18 @@
-pipeline {
+ipeline {
     agent {
         kubernetes {
-            // Use a Docker image with Node.js installed
-            dockerImage 'node:14'
+            // Defining pod and container templates
+            yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: nodejs
+    image: node:14
+    command:
+    - cat
+    tty: true
+"""
         }
     }
     stages {
@@ -13,17 +23,23 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                container('nodejs') {
+                    sh 'npm install'
+                }
             }
         }
         stage('Test') {
             steps {
-                sh 'npm test'
+                container('nodejs') {
+                    sh 'npm test'
+                }
             }
         }
         stage('Build') {
             steps {
-                sh 'npm run build'
+                container('nodejs') {
+                    sh 'npm run build'
+                }
             }
         }
     }
