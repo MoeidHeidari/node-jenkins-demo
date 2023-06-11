@@ -6,6 +6,7 @@ pipeline {
             args '-v /home/node/.npm:/home/node/.npm'
         }
     }
+    
     stages {
         stage('Checkout') {
             steps {
