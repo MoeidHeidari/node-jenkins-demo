@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker-agent {
+        docker {
             label 'docker-agent'
             image 'node:14-alpine' 
             args '-v /home/node/.npm:/home/node/.npm'
