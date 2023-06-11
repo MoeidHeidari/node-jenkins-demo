@@ -1,8 +1,6 @@
-ipeline {
-    agent {
-        kubernetes {
-            // Defining pod and container templates
-            yaml """
+podTemplate(
+    // create a custom pod with nodejs container
+    yaml: """
 apiVersion: v1
 kind: Pod
 spec:
@@ -13,33 +11,28 @@ spec:
     - cat
     tty: true
 """
-        }
-    }
-    stages {
+) {
+    node(POD_LABEL) {
+        // We can use multiple stages for different steps of the pipeline
         stage('Checkout') {
-            steps {
-                checkout scm
-            }
+            checkout scm
         }
+
         stage('Install Dependencies') {
-            steps {
-                container('nodejs') {
-                    sh 'npm install'
-                }
+            container('nodejs') {
+                sh 'npm install'
             }
         }
+
         stage('Test') {
-            steps {
-                container('nodejs') {
-                    sh 'npm test'
-                }
+            container('nodejs') {
+                sh 'npm test'
             }
         }
+
         stage('Build') {
-            steps {
-                container('nodejs') {
-                    sh 'npm run build'
-                }
+            container('nodejs') {
+                sh 'npm run build'
             }
         }
     }
