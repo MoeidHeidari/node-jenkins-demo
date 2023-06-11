@@ -1,12 +1,10 @@
 pipeline {
     agent {
-        docker {
-            label 'docker-agent'
-            image 'node:14-alpine' 
-            args '-v /home/node/.npm:/home/node/.npm'
+        kubernetes {
+            // Use a Docker image with Node.js installed
+            dockerImage 'node:14'
         }
     }
-    
     stages {
         stage('Checkout') {
             steps {
@@ -18,11 +16,15 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('Run Tests') {
+        stage('Test') {
             steps {
                 sh 'npm test'
             }
         }
-        
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
     }
 }
